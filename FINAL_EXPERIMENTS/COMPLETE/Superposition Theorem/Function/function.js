@@ -358,8 +358,10 @@ check.onclick = function chkConn() {
         arrChk2 = 0;
         arrChk3 = 0;
 
-        P1.disabled = true
-        P2.disabled = true
+        // P1.disabled = true
+        // P2.disabled = true
+        on_power1.disabled = false
+        on_power2.disabled = false
         checkflag1 = 1;
         checkflag2 = 1;
         updateAmmeters();
@@ -375,8 +377,11 @@ check.onclick = function chkConn() {
         arrChk2 = 0;
         arrChk3 = 0;
         checkflag1 = 1
-        P1.disabled = true
-        P2.disabled = true
+        checkflag2 = 0
+        // P1.disabled = true
+        // P2.disabled = true
+        on_power1.disabled = false
+        on_power2.disabled = false
 
         updateAmmeters();
 
@@ -390,9 +395,12 @@ check.onclick = function chkConn() {
         arrChk1 = 0;
         arrChk2 = 0;
         arrChk3 = 0;
+        checkflag1 = 0
         checkflag2 = 1;
-        P1.disabled = true
-        P2.disabled = true
+        // P1.disabled = true
+        // P2.disabled = true
+        on_power1.disabled = false
+        on_power2.disabled = false
 
         updateAmmeters();
 
@@ -469,17 +477,17 @@ function updateAmmeters() {
         for (var j = 0; j < connData.length; j++) {
 
             if (flag_case == 1) {
-                var d = case_1[(connData[j] / 4) - j * 3] * 3.6;
+                var d = case_1[(connData[j] / 4) - j * 3] * 3;
                 pointerArr[j].style.transform = "rotate(" + Math.abs(d) + "deg)";
             }
 
             else if (flag_case == 2) {
-                var d = case_2[(connData[j] / 4) - j * 3] * 3.6;
+                var d = case_2[(connData[j] / 4) - j * 3] * 3;
                 pointerArr[j].style.transform = "rotate(" + Math.abs(d) + "deg)";
             }
 
             else if (flag_case == 3) {
-                var d = case_3[(connData[j] / 4) - j * 3] * 3.6;
+                var d = case_3[(connData[j] / 4) - j * 3] * 3;
                 pointerArr[j].style.transform = "rotate(" + Math.abs(d) + "deg)";
             }
         }
@@ -529,17 +537,16 @@ on_power1.onclick = function toggle_onOff1() {
     if ((power1_state == 0)) {
         power1_state = 1;
         document.getElementById("power_1").src = "../Assets/current_src _on.png";
-        if (checkflag2 == 0) {
+        if ((checkflag2 == 1)&&(flagsCP1 == 0)) {
             P1.value = 0;
             PS1D.value = "0 A"
             P1.disabled = false;
         }
-
     }
     else if (power1_state == 1) {
         power1_state = 0;
         document.getElementById("power_1").src = "../Assets/current_src _off.png";
-        if (checkflag2 == 0) {
+        if ((checkflag2 == 1)&&(flagsCP1 == 0)) {
             P1.value = 0;
             PS1D.value = "0 A"
             P1.disabled = true;
@@ -556,22 +563,20 @@ on_power2.onclick = function toggle_onOff2() {
     if ((power2_state == 0)) {
         power2_state = 1;
         document.getElementById("power_2").src = "../Assets/voltage_src _on.png";
-        if (checkflag1 == 0) {
+        if ((checkflag1 == 1)&&(flagsCP2 == 0)) {
             P2.value = 0;
             PS2D.value = "0 V"
             P2.disabled = false;
         }
-
     }
     else if (power2_state == 1) {
         power2_state = 0;
         document.getElementById("power_2").src = "../Assets/voltage_src _off.png";
-        if (checkflag1 == 0) {
+        if ((checkflag1 == 1)&&(flagsCP2 == 0)) {
             P2.value = 0;
             PS2D.value = "0 V"
             P2.disabled = true;
         }
-
         setZero();
     }
 }
@@ -621,17 +626,21 @@ add.onclick = function addToTable() {
         // document.getElementById("MCB").src = "../Assets/MCB_Off.png";
         // mcb_switch.style.transform = "translate(0px, 0px)"
 
-        power1_state = 0;
-        document.getElementById("power_1").src = "../Assets/current_src _off.png";
-        //PS1D.value = '0 A'
-        //P1.value = 0
-        P1.disabled = true
+        if (checkflag2 == 1) {
+            power1_state = 0;
+            document.getElementById("power_1").src = "../Assets/current_src _off.png";
+            //PS1D.value = '0 A'
+            //P1.value = 0
+            P1.disabled = true
+        }
 
-        power2_state = 0;
-        document.getElementById("power_2").src = "../Assets/voltage_src _off.png";
-        //PS2D.value = '0 V'
-        //P2.value = 0
-        P2.disabled = true
+        if (checkflag1 == 1) {
+            power2_state = 0;
+            document.getElementById("power_2").src = "../Assets/voltage_src _off.png";
+            //PS2D.value = '0 V'
+            //P2.value = 0
+            P2.disabled = true
+        }
 
         setZero();
 
@@ -640,6 +649,9 @@ add.onclick = function addToTable() {
         }
 
         this.disabled = true
+    }
+    else {
+        window.alert("Please turn on the connected power supplies!")
     }
 }
 
@@ -660,13 +672,13 @@ calculate.onclick = function doCalc() {
         csC.value = P1.value
         vsC.value = P2.value
 
-        R1cs.value = I_r1_a
-        R2cs.value = I_r2_a
-        R3cs.value = I_r3_a
+        R1cs.value = I_r1_v
+        R2cs.value = I_r2_v
+        R3cs.value = I_r3_v
 
-        R1vs.value = I_r1_v
-        R2vs.value = I_r2_v
-        R3vs.value = I_r3_v
+        R1vs.value = I_r1_a
+        R2vs.value = I_r2_a
+        R3vs.value = I_r3_a
 
         if (sign1.innerHTML == " + ") {
             R1cv.value = (I_r1_a + I_r1_v).toPrecision(3)
@@ -691,16 +703,16 @@ calculate.onclick = function doCalc() {
 
         document.getElementById("verify").disabled = false
     }
-    else{
+    else {
         window.alert("Choose calculation signs first!")
     }
 }
 
 function VerifyUser() {
 
-    if ((R1cv.value == R1cvU.value) && (R1cv.value == I_r1.toPrecision(3))) {
-        if ((R2cv.value == R2cvU.value) && (R2cv.value == I_r2.toPrecision(3))) {
-            if ((R3cv.value == R3cvU.value) && (R3cv.value == I_r3.toPrecision(3))) {
+    if ((parseFloat(R1cv.value) == parseFloat(R1cvU.value)) && (parseFloat(R1cv.value) == I_r1.toPrecision(3))) {
+        if ((parseFloat(R2cv.value) == parseFloat(R2cvU.value)) && (parseFloat(R2cv.value) == I_r2.toPrecision(3))) {
+            if ((parseFloat(R3cv.value) == parseFloat(R3cvU.value)) && (parseFloat(R3cv.value) == I_r3.toPrecision(3))) {
                 window.alert("Observations match the calculations! Super Position Priciple is verified")
             }
             else {
@@ -726,31 +738,31 @@ function highlight() {
         window.alert("Please choose resitance values first")
     }
 
-    if ((flagsCP1 == 0) && (instance.getAllConnections().length != 0)) {
+    // if ((flagsCP1 == 0) && (instance.getAllConnections().length != 0)) {
 
-        if (((instance.getConnections({ source: p_power1 })[0] != undefined) || (instance.getConnections({ target: p_power1 })[0] != undefined) || (instance.getConnections({ source: n_power1 })[0] != undefined) || (instance.getConnections({ target: n_power1 })[0] != undefined))) {
-            window.alert("Please choose current value first")
-            instance.deleteConnectionsForElement(p_power1)
-            instance.deleteConnectionsForElement(n_power1)
-        }
-    }
+    //     if (((instance.getConnections({ source: p_power1 })[0] != undefined) || (instance.getConnections({ target: p_power1 })[0] != undefined) || (instance.getConnections({ source: n_power1 })[0] != undefined) || (instance.getConnections({ target: n_power1 })[0] != undefined))) {
+    //         window.alert("Please choose current value first")
+    //         instance.deleteConnectionsForElement(p_power1)
+    //         instance.deleteConnectionsForElement(n_power1)
+    //     }
+    // }
 
-    if ((flagsCP2 == 0) && (instance.getAllConnections().length != 0)) {
+    // if ((flagsCP2 == 0) && (instance.getAllConnections().length != 0)) {
 
-        if (((instance.getConnections({ source: p_power2 })[0] != undefined) || (instance.getConnections({ target: p_power2 })[0] != undefined) || (instance.getConnections({ source: n_power2 })[0] != undefined) || (instance.getConnections({ target: n_power2 })[0] != undefined))) {
-            window.alert("Please choose voltage value first")
-            instance.deleteConnectionsForElement(p_power2)
-            instance.deleteConnectionsForElement(n_power2)
-        }
-    }
+    //     if (((instance.getConnections({ source: p_power2 })[0] != undefined) || (instance.getConnections({ target: p_power2 })[0] != undefined) || (instance.getConnections({ source: n_power2 })[0] != undefined) || (instance.getConnections({ target: n_power2 })[0] != undefined))) {
+    //         window.alert("Please choose voltage value first")
+    //         instance.deleteConnectionsForElement(p_power2)
+    //         instance.deleteConnectionsForElement(n_power2)
+    //     }
+    // }
 
-    if (flag_s2 != 0) {
+    if (flag_s2 == 1) {
         s1.style.color = "black";
         s2.style.color = "red";
-
+        flag_s2 = 2
     }
 
-    if ((conn.length != 0) && (flag_case == 0) && (flag_s2 != 0)) {
+    if ((conn.length != 0) && (flag_case == 0) && (flag_s2 == 2)) {
         s1.style.color = "black";
         s2.style.color = "black";
         s3.style.color = "red";
@@ -760,14 +772,14 @@ function highlight() {
         R3.disabled = true;
     }
 
-    if ((flag_case == 1) && (flag_s4 == 1)) {
+    if ((flag_case == 2) && (flag_s4 == 1)) {
         s1.style.color = "black";
         s2.style.color = "black";
         s3.style.color = "black";
         s4.style.color = "red";
     }
 
-    if (((flag_case == 1) && (power1_state == 1) && (power2_state == 1))) {
+    if (((flag_case == 1) &&(power1_state == 1))) {
         s1.style.color = "black";
         s2.style.color = "black";
         s3.style.color = "black";
@@ -785,6 +797,7 @@ function highlight() {
     }
 
     if (((flag_case == 2) && (power2_state == 1))) {
+        flag_s5 = 2
         s1.style.color = "black";
         s2.style.color = "black";
         s3.style.color = "black";

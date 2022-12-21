@@ -36,7 +36,7 @@
                             <li>Leave connections for current supply open to as current supplies have infinite internal resistance. 1->11, 2->12, 3->13, 4->14, 5->15, 6->16</li>
                         </ul>
                     <li id="s3">Click 'CHECK' button to check connections.</li>
-                    <li id="s4">Turn on the MCB and Power-Supplies.</li>
+                    <li id="s4">Turn the connected Power-Supplies (voltage source).</li>
                     <li id="s5">Click the 'ADD' button to add observations to the table.</li>
 
                     <li id="s6">Repeate the above steps, but connecting the current supply.</li>
@@ -159,7 +159,7 @@
 
                             <button id="p_power1"><label id = "label7" onclick="disconnect(6)">7</label></button>
                             <button id="n_power1"><label id = "label8" onclick="disconnect(7)">8</label></button>
-                            <button id="on_power1"></button>
+                            <button id="on_power1" disabled="true"></button>
 
                             <button id="c_p_power1"><label id = "label9" onclick="disconnect(8)">9</label></button>
                             <button id="c_n_power1"><label id = "label10" onclick="disconnect(9)">10</label></button>
@@ -179,7 +179,7 @@
 
                             <button id="p_power2"><label id = "label19" onclick="disconnect(18)">19</label></button>
                             <button id="n_power2"><label id = "label20" onclick="disconnect(19)">20</label></button>
-                            <button id="on_power2"></button>
+                            <button id="on_power2" disabled="true"></button>
 
 
                             <input type="text" class="SeeOnly" readonly id="R1Display" value="0.1">
