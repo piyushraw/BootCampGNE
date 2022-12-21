@@ -78,6 +78,7 @@ var flags1 = 0
 var flags1_2 = 0
 var flags4 = 0
 var flags5 = 0
+var flagADD = 0
 
 window.onload = function setSize() {
     document.body.style.zoom = "89%"
@@ -261,6 +262,7 @@ check.onclick = function callCheck() {
             window.alert("Multimeter connected")
             case_checks.push(1)
             caseVal = 1;
+            add.disabled = false
         }
         else if ((i == 1) && (checkcon(valList[i])) == 4) {
             window.alert("Ammeter connected, please turn on the power supply")
@@ -289,9 +291,9 @@ check.onclick = function callCheck() {
 
     iter.push(caseVal)
 
-    if ((iter.indexOf(1) >= 0) && (iter.indexOf(2) >= 0) && (iter.indexOf(3) >= 0)) {
-        add.disabled = false
-    }
+    // if ((iter.indexOf(1) >= 0) && (iter.indexOf(2) >= 0) && (iter.indexOf(3) >= 0)) {
+    //     add.disabled = false
+    // }
 
     updateAmmeters(caseVal)
 }
@@ -299,10 +301,13 @@ check.onclick = function callCheck() {
 on_pow.onclick = function toggle() {
     if (pow_state == 0) {
         document.getElementById("power").src = "../Assets/PowerSupplyOn.png"
-        variacSlider.disabled = false
         updateAmmeters()
         pow_state = 1;
-        add.disabled=false
+        add.disabled = false
+
+        if (flagADD == 0) {
+            variacSlider.disabled = false
+        }
     }
     else if (pow_state == 1) {
         document.getElementById("power").src = "../Assets/PowerSupplyOff.png"
@@ -314,11 +319,14 @@ on_pow.onclick = function toggle() {
 
 add.onclick = function AddToTable() {
 
-    variacSlider.disabled = true;
     document.getElementById("power").src = "../Assets/PowerSupplyOff.png"
-    variacSlider.disabled = true
     pow_state = 0;
     P_A.style.transform = "rotate(0deg)"
+
+    variacSlider.disabled = true
+    if (caseVal != 1) {
+        flagADD = 1
+    }
 
     calculate.disabled = false
 
@@ -332,7 +340,7 @@ add.onclick = function AddToTable() {
     let tabRl
 
 
-    if ((case_checks.indexOf(1) != -1) && (case_checks.indexOf(2) != -1) && (case_checks.indexOf(3) != -1) && (case_checks.length > 3)) {
+    if ((vtable.rows[1].cells[2].innerHTML != '-') && (vtable.rows[1].cells[3].innerHTML != '-') && (vtable.rows[1].cells[4].innerHTML != '-')) {
         row = vtable.insertRow(obs + 1);
 
         SNo = row.insertCell(0);
@@ -372,7 +380,7 @@ add.onclick = function AddToTable() {
     tabRl.innerHTML = document.getElementById("Rls").value;
 
     calculate.disabled = false
-    add.disabled=true
+    add.disabled = true
 }
 
 calculate.onclick = function doCalc() {
