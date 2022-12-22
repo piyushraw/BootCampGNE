@@ -340,7 +340,7 @@ add.onclick = function AddToTable() {
     let tabRl
 
 
-    if ((vtable.rows[1].cells[2].innerHTML != '-') && (vtable.rows[1].cells[3].innerHTML != '-') && (vtable.rows[1].cells[4].innerHTML != '-')) {
+    if ((vtable.rows[vtable.rows.length - 1].cells[2].innerHTML != '-') && (vtable.rows[vtable.rows.length - 1].cells[3].innerHTML != '-') && (vtable.rows[vtable.rows.length - 1].cells[4].innerHTML != '-')) {
         row = vtable.insertRow(obs + 1);
 
         SNo = row.insertCell(0);

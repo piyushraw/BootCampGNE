@@ -103,6 +103,7 @@ Rls.oninput = function updateRls() {
 variacSlider.oninput = function updateVS() {
     flags1_2 = 1
     PSD.value = this.value + ' V'
+    updateAmmeters(caseVal)
 }
 
 // P_M.onclick = function rotateKnob() {
@@ -217,12 +218,10 @@ function updateAmmeters(n) {
 
     I = V / (R + Rl)
 
-    console.log(V)
-
     if (n == 1) {
         MMD.value = R.toFixed(2)
         // if (knob_state == 200) {
-            
+
         // }
         // else {
         //     window.alert("Please correct the multimeter settings and check again")
@@ -230,7 +229,7 @@ function updateAmmeters(n) {
         // }
     }
     else if (n == 2) {
-        var d = V * 1.8
+        var d = V * (220/180)
         P_V.style.transform = "rotate(" + Math.abs(d) + "deg)"
     }
     else if (n == 3) {
@@ -258,19 +257,21 @@ check.onclick = function callCheck() {
             break;
         }
         else if ((i == 1) && (checkcon(valList[i]) == 4) && (instance.getAllConnections().length == 4)) {
-            window.alert("Voltmeter connected")
+            window.alert("Voltmeter connected Please turn on the power supply")
             case_checks.push(2)
             variacSlider.disabled = true
             checkflag = 1;
             caseVal = 2;
+            on_pow.disabled = false
             break;
         }
         else if ((i == 2) && (checkcon(valList[i]) == 5) && (instance.getAllConnections().length == 5)) {
-            window.alert("Load connected")
+            window.alert("Load connected Please turn on the power supply")
             case_checks.push(3)
             variacSlider.disabled = true
             checkflag = 1
             caseVal = 3;
+            on_pow.disabled = false
             break;
         }
         else if ((i == 2)) {
@@ -280,9 +281,9 @@ check.onclick = function callCheck() {
     }
     iter.push(caseVal)
 
-    if ((iter.indexOf(1) >= 0) && (iter.indexOf(2) >= 0) && (iter.indexOf(3) >= 0)) {
-        add.disabled = false
-    }
+    // if ((iter.indexOf(1) >= 0) && (iter.indexOf(2) >= 0) && (iter.indexOf(3) >= 0)) {
+    //     add.disabled = false
+    // }
 
     updateAmmeters(caseVal)
 }
@@ -290,7 +291,8 @@ check.onclick = function callCheck() {
 on_pow.onclick = function toggle() {
     if (pow_state == 0) {
         document.getElementById("power").src = "../Assets/voltage_src _on.png"
-        if (checkflag == 0) {
+        updateAmmeters();
+        if (flags1_2 == 0) {
             variacSlider.disabled = false
         }
         pow_state = 1;
@@ -299,6 +301,7 @@ on_pow.onclick = function toggle() {
         document.getElementById("power").src = "../Assets/voltage_src _off.png"
         variacSlider.disabled = true
         pow_state = 0
+        P_A.style.transform = "rotate(0deg)"   
     }
 }
 
@@ -314,7 +317,7 @@ add.onclick = function AddToTable() {
     let R_load;
     let Reading;
 
-    if ((case_checks.indexOf(1) != -1) && (case_checks.indexOf(2) != -1) && (case_checks.indexOf(3) != -1) && (case_checks.length > 3)) {
+    if ((vtable.rows[vtable.rows.length - 1].cells[1] == '-') || (vtable.rows[vtable.rows.length - 1].cells[2] == '-') || (vtable.rows[vtable.rows.length - 1].cells[3] == '-')) {
         row = vtable.insertRow(obs + 1);
 
         SNo = row.insertCell(0);
@@ -348,8 +351,14 @@ add.onclick = function AddToTable() {
     }
 
     R_load.innerHTML = document.getElementById("Rls").value
+    document.getElementById("power").src = "../Assets/voltage_src _off.png"
+    variacSlider.disabled = true
+    pow_state = 0
+    variacSlider.disabled = true
 
-    calculate.disabled = false
+    if ((vtable.rows[vtable.rows.length - 1].cells[1] != '-') || (vtable.rows[vtable.rows.length - 1].cells[2] != '-') || (vtable.rows[vtable.rows.length - 1].cells[3] != '-')) {
+        calculate.disabled = false
+    }
 }
 
 calculate.onclick = function doCalc() {
@@ -381,11 +390,19 @@ calculate.onclick = function doCalc() {
 }
 
 function verifyUser() {
-    if ((Ilo.value == Ilo.value) && (Ilc.value != "")) {
-        window.alert("Observed Value is equal to calculated value, Thevenin's Therom is verified!")
+    if (document.getElementById('IlC_obsv').value == "") {
+        window.alert("Please enter the value to verify.")
     }
+
+    else if (document.getElementById('IlC_calc').value == document.getElementById('IlC_obsv').value) {
+
+        window.alert("Observed Value is equal to calculated value. Hence, Thevenin's Theorem is verified");
+    }
+
     else {
-        window.alert("Observed Value is not equal to calculated value")
+
+        window.alert("Observed value is not equal to calculated value. Hence, Thevenin's Theorem is not verified!");
+
     }
 }
 
@@ -403,13 +420,13 @@ function highlight() {
         instance.deleteEveryConnection();
     }
 
-    if ((flags1_2 == 0) && (instance.getAllConnections().length != 0)) {
-        if (!((instance.getConnections({ source: p_pow })[0] == undefined) && (instance.getConnections({ target: p_pow })[0] == undefined) && (instance.getConnections({ source: n_pow })[0] == undefined) && (instance.getConnections({ source: n_pow })[0] == undefined))) {
-            window.alert("Please choose voltage value first")
-            instance.deleteConnectionsForElement(p_pow)
-            instance.deleteConnectionsForElement(n_pow)
-        }
-    }
+    // if ((flags1_2 == 0) && (instance.getAllConnections().length != 0)) {
+    //     if (!((instance.getConnections({ source: p_pow })[0] == undefined) && (instance.getConnections({ target: p_pow })[0] == undefined) && (instance.getConnections({ source: n_pow })[0] == undefined) && (instance.getConnections({ source: n_pow })[0] == undefined))) {
+    //         window.alert("Please choose voltage value first")
+    //         instance.deleteConnectionsForElement(p_pow)
+    //         instance.deleteConnectionsForElement(n_pow)
+    //     }
+    // }
 
     if (flags1 == 1) {
         s1.style.color = "black";
